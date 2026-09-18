@@ -2,17 +2,20 @@
 
 ## 1. Architecture Overview
 
-FitFlow uses a layered architecture with a Flutter client, NestJS backend, FastAPI AI service, PostgreSQL database, Redis caching/real-time layer, and AWS Cognito authentication.
+FitFlow uses a layered architecture with a Flutter client, NestJS backend, FastAPI AI service, PostgreSQL database, Redis caching and real-time layer, and AWS Cognito authentication.
 
 ## 2. Main Components
 
 ### Frontend
+
 Flutter provides the FitFlow application for iOS, Android, and Web.
 
 ### API Gateway
+
 The API Gateway provides a single entry point between the client applications and backend services.
 
 ### Backend
+
 NestJS provides the main backend services:
 
 - User and Profile Service
@@ -22,6 +25,7 @@ NestJS provides the main backend services:
 - Real-Time Gateway using WebSockets
 
 ### AI Service
+
 FastAPI provides a separate AI/ML service for personalized workout recommendations and personalization processing.
 
 ### Data Layer
@@ -41,9 +45,13 @@ AWS Cognito is used for authentication and authorization.
 ### Personalized Workout Plans
 
 Flutter App
+
 → API Gateway
+
 → NestJS Workout Service
+
 → FastAPI AI Service
+
 → PostgreSQL
 
 The AI service processes relevant fitness information and provides personalized workout recommendations.
@@ -51,8 +59,11 @@ The AI service processes relevant fitness information and provides personalized 
 ### Social Sharing
 
 Flutter App
+
 → API Gateway
+
 → NestJS Social Service
+
 → PostgreSQL
 
 Redis can support real-time communication where required.
@@ -60,9 +71,13 @@ Redis can support real-time communication where required.
 ### Nutrition Tracking
 
 Flutter App
+
 → API Gateway
+
 → NestJS Nutrition Service
+
 → FastAPI AI Service
+
 → PostgreSQL
 
 Nutrition-related information can be processed by the AI service when personalization is required.
@@ -71,56 +86,90 @@ Nutrition-related information can be processed by the AI service when personaliz
 
 ## 4. Security Considerations
 
-- AWS Cognito handles user authentication.
-- Backend services validate authenticated requests.
-- HTTPS should be used for communication between client and backend.
-- Sensitive user information should be protected.
-- Role-based authorization should be applied to protected backend operations.
+- AWS Cognito is used for user authentication and authorization.
+- Secure communication should be used between the frontend and backend services.
+- JWT-based authentication can be used for protected API requests.
+- Backend APIs should validate user input.
+- Sensitive user and fitness data should be protected.
+- Access to user information should be controlled based on user roles and permissions.
 
 ---
 
 ## 5. Scalability Considerations
 
-- Backend services are separated into logical modules.
-- FastAPI AI processing is separated from the main backend.
-- Redis can reduce repeated database requests through caching.
-- PostgreSQL provides structured and reliable data storage.
-- Services can be scaled independently when required.
+- The NestJS backend can be scaled horizontally when user traffic increases.
+- Redis can reduce repeated database queries through caching.
+- The FastAPI AI service can be scaled independently based on AI processing requirements.
+- PostgreSQL provides centralized storage for application data.
+- An API Gateway can help manage requests between clients and backend services.
 
 ---
 
 ## 6. Integration Considerations
 
-The Flutter application communicates with the NestJS backend through REST APIs.
+The system uses REST APIs for communication between the Flutter frontend and NestJS backend.
 
-NestJS communicates with the FastAPI AI service for AI/ML processing.
+The NestJS backend communicates with the FastAPI AI service when AI-based personalization is required.
 
-NestJS services use PostgreSQL for persistent data storage and Redis for caching and real-time requirements.
+WebSockets are used through the NestJS Real-Time Gateway for real-time communication.
 
-AWS Cognito provides the authentication layer across the application.
+Redis supports caching and real-time/pub-sub requirements.
+
+PostgreSQL is used as the main persistent database.
+
+AWS Cognito manages authentication and authorization.
 
 ---
 
-## 7. Architecture Decision Record
+## 7. Architecture Decision Record (ADR)
 
 ### Decision
 
-FitFlow will use Flutter, NestJS, FastAPI, PostgreSQL, Redis, and AWS Cognito as the main technology stack.
+The selected FitFlow architecture uses:
+
+- Flutter for frontend development
+- NestJS for the main backend
+- FastAPI for AI/ML functionality
+- PostgreSQL for the primary database
+- Redis for caching and real-time/pub-sub requirements
+- AWS Cognito for authentication and authorization
 
 ### Reasons
 
-- Flutter supports iOS, Android, and Web development.
-- NestJS provides a structured backend architecture.
-- FastAPI is suitable for AI/ML processing.
-- PostgreSQL provides structured data storage.
-- Redis supports caching and real-time requirements.
-- AWS Cognito provides authentication and authorization.
-- Separating AI processing from the main backend improves integration and maintainability.
+This architecture separates the main application backend from AI/ML processing.
+
+Flutter supports development for multiple platforms from a single codebase.
+
+NestJS provides a structured backend architecture for the main application services.
+
+FastAPI provides a separate service for AI and personalization features.
+
+PostgreSQL provides the primary data storage.
+
+Redis supports caching and real-time requirements.
+
+AWS Cognito provides authentication and authorization.
 
 ### Alternatives Considered
 
-Alternative technologies were compared during the technology evaluation activities, including React Native, Kotlin Multiplatform, Swift/SwiftUI, FastAPI as a main backend, Go, MongoDB, Firebase, DynamoDB, Firebase Authentication, Auth0, and Supabase.
+Other technologies considered during the comparison included:
+
+- React Native
+- Kotlin Multiplatform
+- Swift/SwiftUI
+- FastAPI as the main backend
+- Go
+- MongoDB
+- Firebase
+- DynamoDB
+- Firebase Authentication
+- Auth0
+- Supabase
 
 ### Consequences
 
-This architecture introduces multiple services that require integration and deployment management. However, it provides clear separation between the client, main backend, AI processing, authentication, and data layers.
+This architecture introduces multiple services that need to be maintained and integrated.
+
+However, separating the AI service from the main backend allows AI functionality to be developed and scaled independently.
+
+The architecture also provides a clear separation between frontend, backend, AI processing, authentication, and data storage.
